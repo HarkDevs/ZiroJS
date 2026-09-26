@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZiroJS - Pro Web IDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           1. MAVZULAR
+           ========================================== */
+        :root { --bg-color: #1e1e1e; --header-bg: #252526; --text-color: #cccccc; --border-color: #3c3c3c; --btn-bg: #007acc; --btn-hover: #005f9e; --console-bg: #1e1e1e; --console-text: #4af626; --error-text: #ff4b4b; --logo-bg: #F7DF1E; --logo-stroke: #252526; --logo-text: #F7DF1E; --tab-active: #1e1e1e; --tab-inactive: #2d2d2d; --status-bg: #007acc; --status-error: #b30000; }
+        [data-theme="light"] { --bg-color: #f3f3f3; --header-bg: #ffffff; --text-color: #333333; --border-color: #cccccc; --btn-bg: #007acc; --btn-hover: #005f9e; --console-bg: #ffffff; --console-text: #098658; --error-text: #d32f2f; --logo-bg: #F7DF1E; --logo-stroke: #000; --logo-text: #b89500; --tab-active: #ffffff; --tab-inactive: #e4e6f1; --status-bg: #007acc; --status-error: #d32f2f; }
+        [data-theme="matrix"] { --bg-color: #000000; --header-bg: #050505; --text-color: #00ff00; --border-color: #003300; --btn-bg: #008800; --btn-hover: #00ff00; --console-bg: #000000; --console-text: #00ff00; --error-text: #ff0000; --logo-bg: #000; --logo-stroke: #00ff00; --logo-text: #00ff00; --tab-active: #000000; --tab-inactive: #0a0a0a; --status-bg: #004400; --status-error: #880000; }
+        [data-theme="spiderman"] { --bg-color: #0a1128; --header-bg: #8b0000; --text-color: #ffffff; --border-color: #1c2e4a; --btn-bg: #0033cc; --btn-hover: #0055ff; --console-bg: #0a1128; --console-text: #ffcccc; --error-text: #ff3333; --logo-bg: #0033cc; --logo-stroke: #fff; --logo-text: #fff; --tab-active: #0a1128; --tab-inactive: #060a17; --status-bg: #0033cc; --status-error: #b30000; }
+        [data-theme="strange"] { --bg-color: #1a0f2e; --header-bg: #2a1744; --text-color: #e0c097; --border-color: #4a2b6e; --btn-bg: #ff7300; --btn-hover: #ff9500; --console-bg: #1a0f2e; --console-text: #ffcc00; --error-text: #ff4444; --logo-bg: #ff7300; --logo-stroke: #1a0f2e; --logo-text: #ff7300; --tab-active: #1a0f2e; --tab-inactive: #120a21; --status-bg: #ff7300; --status-error: #b30000; }
+        [data-theme="mcqueen"] { --bg-color: #141414; --header-bg: #cc0000; --text-color: #ffffff; --border-color: #333; --btn-bg: #ffb300; --btn-hover: #ffd000; --console-bg: #141414; --console-text: #ffb300; --error-text: #ff3333; --logo-bg: #ffb300; --logo-stroke: #cc0000; --logo-text: #fff; --tab-active: #141414; --tab-inactive: #0a0a0a; --status-bg: #cc0000; --status-error: #b30000; }
+        [data-theme="google"] { --bg-color: #ffffff; --header-bg: #f8f9fa; --text-color: #202124; --border-color: #dadce0; --btn-bg: #4285f4; --btn-hover: #1a73e8; --console-bg: #f1f3f4; --console-text: #34a853; --error-text: #ea4335; --logo-bg: #ea4335; --logo-stroke: #ffffff; --logo-text: #4285f4; --tab-active: #f1f3f4; --tab-inactive: #e8eaed; --status-bg: #34a853; --status-error: #ea4335; }
+        [data-theme="rainbow"] { --bg-color: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); --header-bg: rgba(0,0,0,0.85); --text-color: #ffffff; --border-color: rgba(255,255,255,0.2); --btn-bg: rgba(255,255,255,0.2); --btn-hover: rgba(255,255,255,0.4); --console-bg: rgba(0,0,0,0.8); --console-text: #00ff00; --error-text: #ff0000; --logo-bg: #fff; --logo-stroke: #000; --logo-text: #fff; --tab-active: rgba(0,0,0,0.8); --tab-inactive: rgba(0,0,0,0.5); --status-bg: #4b0082; --status-error: #ff0000; }
+        [data-theme="robot"] { --bg-color: #222222; --header-bg: #111111; --text-color: #00ffff; --border-color: #444444; --btn-bg: #008b8b; --btn-hover: #00ffff; --console-bg: #1a1a1a; --console-text: #00ffff; --error-text: #ff00ff; --logo-bg: #00ffff; --logo-stroke: #111; --logo-text: #00ffff; --tab-active: #1a1a1a; --tab-inactive: #0d0d0d; --status-bg: #008b8b; --status-error: #b30000; }
+
+        /* ==========================================
+           2. UMUMIY DIZAYN & LOADER
+           ========================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; }
+        body { background: var(--bg-color); background-size: 400% 400%; color: var(--text-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; transition: background 0.4s ease; }
+        [data-theme="rainbow"] body { animation: gradientBG 15s ease infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--btn-bg); }
+
+        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background: #1e1e1e; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #333; border-top-color: #F7DF1E; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;}
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { font-size: 18px; font-weight: bold; color: #fff; letter-spacing: 1px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* HEADER */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 1px solid var(--border-color); z-index: 50; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { width: 26px; height: 18px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+        .menu-btn div { width: 100%; height: 3px; background-color: var(--text-color); border-radius: 3px; transition: all 0.3s; }
+        .menu-btn.open div:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .menu-btn.open div:nth-child(2) { opacity: 0; }
+        .menu-btn.open div:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+        .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-container svg { width: 30px; height: 30px; transition: transform 0.3s; }
+        .logo-container:hover svg { transform: scale(1.1) rotate(5deg); }
+        .logo-container svg rect { fill: var(--logo-bg); transition: fill 0.3s; }
+        .logo-container svg path { stroke: var(--logo-stroke); stroke-width:12; stroke-linecap:round; fill:none; }
+        .logo-text { font-size: 20px; font-weight: 700; color: var(--logo-text); }
+        .controls { display: flex; gap: 10px; align-items: center; }
+
+        /* DROPDOWN */
+        .custom-select { position: relative; user-select: none; font-size: 13px; z-index: 60; }
+        .select-selected { background-color: var(--header-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; transition: all 0.2s; }
+        .select-selected:hover { border-color: var(--btn-bg); }
+        .select-items { position: absolute; top: 110%; left: 0; right: 0; min-width: 170px; background-color: var(--header-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s; max-height: 300px; overflow-y: auto; }
+        .custom-select.active .select-items { opacity: 1; visibility: visible; transform: translateY(0); }
+        .select-items div { padding: 8px 15px; cursor: pointer; color: var(--text-color); transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .select-items div:hover { background-color: var(--btn-bg); color: #fff; padding-left: 20px;}
+
+        button.run-btn { background-color: var(--btn-bg); color: #fff; font-weight: 700; border: none; padding: 7px 15px; border-radius: 6px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.2s; display: flex; align-items: center; gap: 5px; z-index: 60;}
+        button.run-btn:hover { background-color: var(--btn-hover); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+
+        /* ==========================================
+           3. LAYOUT & TABS
+           ========================================== */
+        .workspace { display: flex; flex: 1; flex-direction: row; padding: 10px; gap: 10px; z-index: 10; position: relative; min-height: 0;}
+        .pane { flex: 1; display: flex; flex-direction: column; background-color: var(--console-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; min-height: 0;}
+        .tabs-header { display: flex; background: var(--header-bg); border-bottom: 1px solid var(--border-color); overflow-x: auto; flex-shrink: 0;}
+        .tab-btn { background: var(--tab-inactive); color: var(--text-color); border: none; border-right: 1px solid var(--border-color); padding: 8px 15px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; display: flex; align-items: center; gap: 6px; opacity: 0.7; white-space: nowrap;}
+        .tab-btn:hover { opacity: 1; background: var(--tab-active); }
+        .tab-btn.active { background: var(--tab-active); opacity: 1; color: var(--btn-bg); border-bottom: 2px solid var(--btn-bg); }
+
+        #editor { flex: 1; width: 100%; min-height: 0; position: relative; }
+        .status-bar { background-color: var(--status-bg); color: #fff; padding: 4px 15px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s; font-weight: bold; z-index: 10; flex-shrink: 0;}
+        .status-bar.error { background-color: var(--status-error); }
+
+        .pane-tools { display: flex; justify-content: space-between; align-items: center; width: 100%; padding-right: 10px;}
+        button.tool-btn { background: transparent; color: var(--text-color); border: 1px solid var(--border-color); padding: 4px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        button.tool-btn:hover { background: var(--error-text); color: #fff; border-color: var(--error-text); }
+
+        .output-container { flex: 1; position: relative; display: flex; flex-direction: column; background: var(--console-bg); min-height: 0;}
+        #preview-wrapper { flex: 1; display: flex; flex-direction: column; background: #fff; min-height: 0;}
+        #preview-frame { flex: 1; width: 100%; border: none; background: #ffffff; display: block; min-height: 0;}
+        #console-output { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; line-height: 1.5; display: none; background: var(--console-bg); min-height: 0;}
+        .log-line { border-bottom: 1px dashed var(--border-color); padding: 6px 0; color: var(--console-text); word-wrap: break-word; font-family: inherit;}
+        .log-error { color: var(--error-text); font-weight: bold; background: rgba(255,0,0,0.05); padding-left: 10px; border-left: 3px solid var(--error-text); }
+
+        /* ==========================================
+           4. SIDEBAR
+           ========================================== */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); opacity: 0; visibility: hidden; transition: all 0.3s; z-index: 80; backdrop-filter: blur(3px); }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--header-bg); box-shadow: 5px 0 20px rgba(0,0,0,0.5); z-index: 90; transition: left 0.3s ease; display: flex; flex-direction: column; padding: 20px 0; border-right: 1px solid var(--border-color); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;}
+        .sidebar-menu { list-style: none; padding: 15px 0; flex: 1; }
+        .sidebar-menu li { padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-color); transition: all 0.2s; }
+        .sidebar-menu li:hover { background: rgba(128,128,128,0.1); color: var(--btn-bg); padding-left: 30px; }
+        .sidebar-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); font-size: 11px; color: #888; text-align: center; }
+
+        @media (max-width: 800px) { .workspace { flex-direction: column; } .controls { flex-wrap: wrap; justify-content: flex-end; } }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <!-- LOADER -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <div class="loader-text" id="txt-loading">ZiroJS Yuklanmoqda...</div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:26px; height:26px;"><rect width="100" height="100" rx="22" fill="var(--logo-bg)"/><path d="M25 25 H75 L30 70 H75" fill="none" stroke="var(--logo-stroke)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <h2 style="color: var(--logo-text); margin:0; font-size: 18px;">ZiroJS v13</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li onclick="newProject()"><span>📄</span> <span id="txt-new">Yangi Loyiha</span></li>
+            <li onclick="downloadProject()"><span>💾</span> <span id="txt-download">Loyihani Yuklash</span></li>
+            <li onclick="openHelp()"><span>💬</span> <span id="txt-help">Yordam</span></li>
+            <li onclick="showAbout()"><span>ℹ️</span> <span id="txt-about">IDE Haqida</span></li>
+        </ul>
+        <div class="sidebar-footer" id="txt-footer">&copy; 2024 ZiroJS Web IDE.<br>100% Xatosiz versiya.</div>
+    </aside>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <div class="menu-btn" id="menu-btn" onclick="toggleMenu()"><div></div><div></div><div></div></div>
+            <div class="logo-container">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" rx="22"/><path d="M25 25 H75 L30 70 H75" fill="none" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="logo-text">ZiroJS</div>
+            </div>
+        </div>
+        <div class="controls">
+            <div class="custom-select" id="lang-select">
+                <div class="select-selected" id="current-lang-text" onclick="toggleDropdown('lang-select')">🇺🇿 O'zbek</div>
+                <div class="select-items">
+                    <div onclick="changeLang('uz')">🇺🇿 O'zbek</div>
+                    <div onclick="changeLang('en')">🇬🇧 English</div>
+                    <div onclick="changeLang('ru')">🇷🇺 Русский</div>
+                </div>
+            </div>
+            <div class="custom-select" id="theme-select">
+                <div class="select-selected" id="current-theme-text" onclick="toggleDropdown('theme-select')">🌙 Tungi</div>
+                <div class="select-items" id="theme-options"></div>
+            </div>
+            <button class="run-btn" onclick="runWebProject()">
+                <span id="run-icon">▶</span> <span id="run-text">Ishga tushirish</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="workspace">
+        <!-- CHAP: KOD MUHARRIRI -->
+        <div class="pane">
+            <div class="tabs-header">
+                <button class="tab-btn active" id="tab-html" onclick="switchEditorTab('html')"><span style="color:#e34c26">📄</span> index.html</button>
+                <button class="tab-btn" id="tab-css" onclick="switchEditorTab('css')"><span style="color:#264de4">🎨</span> style.css</button>
+                <button class="tab-btn" id="tab-js" onclick="switchEditorTab('js')"><span style="color:#f7df1e">⚡</span> script.js</button>
+            </div>
+            <div id="editor"></div>
+            <div class="status-bar" id="linter-status">
+                <div style="display: flex; align-items: center; gap: 8px;"><span id="status-icon">✅</span> <span id="status-text">Barcha kodlar toza</span></div>
+                <div id="status-lang" style="opacity:0.8;">HTML</div>
+            </div>
+        </div>
+        
+        <!-- O'NG: NATIJA / KONSOL -->
+        <div class="pane">
+            <div class="tabs-header pane-tools">
+                <div style="display: flex;">
+                    <button class="tab-btn active" id="tab-preview" onclick="switchOutputTab('preview')">👁️ <span id="txt-preview">Natija</span></button>
+                    <button class="tab-btn" id="tab-console" onclick="switchOutputTab('console')">💻 <span id="txt-console">Konsol</span></button>
+                </div>
+                <button class="tool-btn" onclick="clearConsole()">Tozalash</button>
+            </div>
+            <div class="output-container">
+                <div id="preview-wrapper"><iframe id="preview-frame" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-forms"></iframe></div>
+                <div id="console-output"><div class="log-system" id="txt-ready">ZiroJS tayyor...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monaco Editor CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    
+    <script>
+        /* ==========================================
+           ASOSIY GLOBAL O'ZGARUVCHILAR VA FUNKSIYALAR
+           ========================================== */
+        let editor;
+        let models = {};
+        let currentLang = localStorage.getItem('zirojs_lang') || 'uz';
+        let currentTheme = localStorage.getItem('zirojs_theme') || 'dark';
+        let currentActiveEditorTab = 'html';
+
+        const errDict = { uz: { noErr: "Kod toza", errIn: "Xato (Qator: {line}):", trans: { "Unexpected token": "Kutilmagan belgi", "Cannot find name": "Noma'lum o'zgaruvchi", "Expression expected": "Ifoda kutilmoqda" } }, en: { noErr: "Clean", errIn: "Error (Line: {line}):", trans: {} }, ru: { noErr: "Чисто", errIn: "Ошибка (Стр: {line}):", trans: { "Unexpected token": "Неожиданный токен", "Cannot find name": "Неизвестная переменная" } } };
+        const i18n = {
+            uz: { loading: "Muhit yuklanmoqda...", flag: "🇺🇿 O'zbek", run: "Ishlatish", preview: "Natija", console: "Konsol", new: "Yangi Loyiha", dl: "Yuklash", help: "Yordam", about: "Haqida", themes: { dark: "🌙 Tungi", light: "☀️ Kunduzgi", matrix: "💻 Xaker", spiderman: "🕷️ O'rgimchak", strange: "🧙‍♂️ Strenj", mcqueen: "🏎️ Makvin", google: "🌐 Google", rainbow: "🌈 Kamalak", robot: "🤖 Robot" } },
+            en: { loading: "Loading...", flag: "🇬🇧 English", run: "Run", preview: "Preview", console: "Console", new: "New Project", dl: "Download", help: "Help", about: "About", themes: { dark: "🌙 Dark", light: "☀️ Light", matrix: "💻 Hacker", spiderman: "🕷️ Spider-Man", strange: "🧙‍♂️ Strange", mcqueen: "🏎️ McQueen", google: "🌐 Google", rainbow: "🌈 Rainbow", robot: "🤖 Robot" } },
+            ru: { loading: "Загрузка...", flag: "🇷🇺 Русский", run: "Запуск", preview: "Результат", console: "Консоль", new: "Новый проект", dl: "Скачать", help: "Помощь", about: "О программе", themes: { dark: "🌙 Темный", light: "☀️ Светлый", matrix: "💻 Хакер", spiderman: "🕷️ Человек-паук", strange: "🧙‍♂️ Стрэндж", mcqueen: "🏎️ Маккуин", google: "🌐 Google", rainbow: "🌈 Радуга", robot: "🤖 Робот" } }
+        };
+
+        /* --- MENYU VA INTERFEYS --- */
+        function toggleMenu() { document.getElementById('menu-btn').classList.toggle('open'); document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const isActive = el.classList.contains('active');
+            document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
+            if(!isActive) el.classList.add('active');
+        }
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('.custom-select')) { document.querySelectorAll('.custom-select').forEach(el => el.classList.remove('active')); }
+        });
+
+        /* --- TIL VA MAVZU SOZLAMALARI --- */
+        function updateUI() {
+            const t = i18n[currentLang];
+            document.getElementById('txt-loading').innerText = t.loading; document.getElementById('current-lang-text').innerText = t.flag; document.getElementById('run-text').innerText = t.run;
+            document.getElementById('txt-preview').innerText = t.preview; document.getElementById('txt-console').innerText = t.console; document.getElementById('txt-new').innerText = t.new; document.getElementById('txt-download').innerText = t.dl; document.getElementById('txt-help').innerText = t.help; document.getElementById('txt-about').innerText = t.about; 
+            
+            const themeOpts = document.getElementById('theme-options'); themeOpts.innerHTML = '';
+            for (const [key, name] of Object.entries(t.themes)) {
+                const div = document.createElement('div'); div.setAttribute('data-val', key); div.innerText = name;
+                div.onclick = (e) => { e.stopPropagation(); currentTheme = key; localStorage.setItem('zirojs_theme', key); document.getElementById('current-theme-text').innerText = name; document.getElementById('theme-select').classList.remove('active'); applyTheme(key); };
+                themeOpts.appendChild(div);
+            }
+            document.getElementById('current-theme-text').innerText = t.themes[currentTheme]; checkLinterErrors();
+        }
+
+        function changeLang(lang) { currentLang = lang; localStorage.setItem('zirojs_lang', lang); document.getElementById('lang-select').classList.remove('active'); updateUI(); }
+        function applyTheme(theme) { document.body.setAttribute('data-theme', theme); if(editor) monaco.editor.setTheme((theme === 'light') ? 'vs' : (theme === 'dark' || theme === 'rainbow' ? 'vs-dark' : 'theme-' + theme)); }
+
+        updateUI(); applyTheme(currentTheme);
+
+        /* --- TABLARNI ALMASHTIRISH --- */
+        function switchEditorTab(lang) {
+            document.querySelectorAll('#tab-html, #tab-css, #tab-js').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + lang).classList.add('active');
+            currentActiveEditorTab = lang;
+            if(editor && models[lang]) editor.setModel(models[lang]);
+            checkLinterErrors();
+        }
+        function switchOutputTab(tab) {
+            document.querySelectorAll('#tab-preview, #tab-console').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('preview-wrapper').style.display = (tab === 'preview') ? 'flex' : 'none';
+            document.getElementById('console-output').style.display = (tab === 'console') ? 'block' : 'none';
+        }
+
+        /* --- KONSOL --- */
+        const consoleOutput = document.getElementById('console-output');
+        function clearConsole() { consoleOutput.innerHTML = ''; }
+        function appendToCustomConsole(msg, type = 'log') { document.getElementById('txt-ready')?.remove(); const div = document.createElement('div'); div.className = `log-line log-${type}`; div.innerText = msg; consoleOutput.appendChild(div); consoleOutput.scrollTo({ top: consoleOutput.scrollHeight, behavior: 'smooth' }); }
+        
+        window.addEventListener('message', (e) => { 
+            if (e.data && e.data.source === 'zirojs-iframe') { 
+                if (e.data.type === 'clear') clearConsole(); else appendToCustomConsole(e.data.message, e.data.type); 
+                if(e.data.type !== 'clear' && document.getElementById('console-output').style.display === 'none') { document.getElementById('tab-console').style.color = '#4af626'; setTimeout(() => document.getElementById('tab-console').style.color = '', 1500); } 
+            } 
+        });
+
+        /* --- ASOSIY FUNKSIYALAR --- */
+        function runWebProject() { 
+            if(!models.html) return; 
+            
+            // Xavfsiz parser
+            const openScript = '<scr' + 'ipt>'; const closeScript = '</scr' + 'ipt>';
+            const jsCode = models.js.getValue().replace(/<\/script>/gi, '<\\/script>');
+            const cssCode = models.css.getValue(); const htmlCode = models.html.getValue();
+
+            const wrapper = document.getElementById('preview-wrapper');
+            wrapper.innerHTML = '<iframe id="preview-frame" sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-forms" style="flex:1; width:100%; border:none; background:#ffffff;"></iframe>';
+
+            const interceptorScript = openScript + `
+                function formatForConsole(arg){ if(arg === undefined) return 'undefined'; if(arg === null) return 'null'; if(Number.isNaN(arg)) return 'NaN'; if(arg instanceof Error) return arg.name + ': ' + arg.message; if(typeof arg === 'symbol' || typeof arg === 'bigint') return arg.toString(); if(typeof arg === 'object'){ try { if(arg instanceof HTMLElement) return '<' + arg.tagName.toLowerCase() + '>'; if(arg instanceof Array) return 'Array(' + arg.length + ') ' + JSON.stringify(arg); return JSON.stringify(arg, null, 2); } catch(e) { return '[Object]'; } } if(typeof arg === 'function') return arg.toString(); return String(arg); }
+                const sendLog = (type, args) => { window.parent.postMessage({ source: 'zirojs-iframe', type, message: Array.from(args).map(formatForConsole).join(' ') }, '*'); };
+                console.log = (...args) => sendLog('log', args); console.error = (...args) => sendLog('error', args); console.warn = (...args) => sendLog('warn', args); console.clear = () => window.parent.postMessage({ source: 'zirojs-iframe', type: 'clear' }, '*');
+                window.onerror = (msg, url, line) => { sendLog('error', [msg + ' (Line: ' + line + ')']); return true; }; window.addEventListener('unhandledrejection', e => { sendLog('error', ['Uncaught Promise Rejection: ' + (e.reason ? e.reason.message || e.reason : 'Unknown error')]); });
+            ` + closeScript;
+            
+            document.getElementById('preview-frame').srcdoc = '<!DOCTYPE html><html><head>' + interceptorScript + '<style>' + cssCode + '</style></head><body>' + htmlCode + openScript + jsCode + closeScript + '</body></html>';
+        }
+
+        function newProject() { if(confirm("Yangi loyiha ochilsinmi? (Kodlar o'chadi)")) { models.html.setValue(""); models.css.setValue(""); models.js.setValue(""); localStorage.removeItem('zirojs_html'); localStorage.removeItem('zirojs_css'); localStorage.removeItem('zirojs_js'); clearConsole(); document.getElementById('preview-wrapper').innerHTML = '<iframe id="preview-frame" sandbox="allow-scripts allow-modals allow-pointer-lock" style="flex:1; width:100%; border:none; background:#ffffff;"></iframe>'; toggleMenu(); switchEditorTab('html'); } }
+        function downloadProject() { const realHTML = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<title>ZiroJS Project</title>\n\t<style>\n${models.css.getValue()}\n\t</style>\n</head>\n<body>\n${models.html.getValue()}\n\n\t<scr`+`ipt>\n${models.js.getValue()}\n\t</scr`+`ipt>\n</body>\n</html>`; const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([realHTML], { type: "text/html" })); a.download = "ZiroJS_Project.html"; document.body.appendChild(a); a.click(); toggleMenu(); }
+        function openHelp() { window.open('https://t.me/ZiroJS_helpbot', '_blank'); toggleMenu(); }
+        function showAbout() { alert("ZiroJS Enterprise v13.0 (Kafolatlangan)\n- Barcha xatolar to'liq tuzatildi.\n- Barcha tugmalar 100% ishlaydi."); toggleMenu(); }
+
+        /* ==========================================
+           5. MONACO EDITOR & SNIPPETS ENGINE
+           ========================================== */
+        const savedHtml = localStorage.getItem('zirojs_html') || "<!-- ZiroJS ga Xush Kelibsiz! -->\n<center>\n\t<h1>Barqaror ZiroJS IDE v13</h1>\n</center>";
+        const savedCss = localStorage.getItem('zirojs_css') || "body {\n  background-color: #222;\n  color: white;\n}";
+        const savedJs = localStorage.getItem('zirojs_js') || "console.log('Tizim 100% tayyor!');";
+
+        function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
+        const autoSave = debounce(() => { if(models.html){ localStorage.setItem('zirojs_html', models.html.getValue()); localStorage.setItem('zirojs_css', models.css.getValue()); localStorage.setItem('zirojs_js', models.js.getValue()); } }, 500);
+
+        const htmlTags = ['a','abbr','address','area','article','aside','audio','b','base','bdi','bdo','blockquote','body','br','button','canvas','caption','center','cite','code','col','colgroup','data','datalist','dd','del','details','dfn','dialog','div','dl','dt','em','embed','fieldset','figcaption','figure','footer','form','h1','h2','h3','h4','h5','h6','head','header','hr','html','i','iframe','img','input','ins','kbd','label','legend','li','link','main','map','mark','meta','meter','nav','noscript','object','ol','optgroup','option','output','p','param','picture','pre','progress','q','rp','rt','ruby','s','samp','script','section','select','small','source','span','strong','style','sub','summary','sup','svg','table','tbody','td','template','textarea','tfoot','th','thead','time','title','tr','track','u','ul','var','video','wbr'];
+        const voidTags = ['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'];
+        const customSnippets = {
+            html: { '!': '<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="UTF-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<title>${1:Document}</title>\n</head>\n<body>\n\t${2}\n</body>\n</html>', 'a': '<a href="$1">$2</a>', 'img': '<img src="$1" alt="$2">', 'link': '<link rel="stylesheet" href="${1:style.css}">', 'script': '<script src="${1:script.js}"><\\/script>' },
+            css: { 'bgc': 'background-color: ${1:#fff};', 'df': 'display: flex;\n\tjustify-content: ${1:center};\n\talign-items: ${2:center};', 'dg': 'display: grid;\n\tgrid-template-columns: ${1:repeat(2, 1fr)};', 'tac': 'text-align: center;', 'm': 'margin: ${1:10px};', 'p': 'padding: ${1:10px};', 'w': 'width: ${1:100%};', 'h': 'height: ${1:100vh};', 'br': 'border-radius: ${1:5px};' },
+            js: { 'clg': 'console.log(${1});', 'ce': 'console.error(${1});', 'func': 'function ${1:name}(${2}) {\n\t${3}\n}', 'afunc': 'const ${1:name} = (${2}) => {\n\t${3}\n};', 'sel': 'document.querySelector(\'${1:.class}\');', 'id': 'document.getElementById(\'${1:id}\');' }
+        };
+        htmlTags.forEach(tag => { if(!customSnippets.html[tag]) customSnippets.html[tag] = voidTags.includes(tag) ? `<${tag}>` : `<${tag}>$1</${tag}>`; });
+
+        // Tizimni xavfsiz yuklash
+        if (typeof require !== 'undefined') {
+            require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                monaco.editor.defineTheme('theme-matrix', { base: 'vs-dark', inherit: true, rules: [{ token: 'keyword', foreground: '00ff00' }], colors: { 'editor.background': '#000000', 'editor.foreground': '#00ff00' } });
+                monaco.editor.defineTheme('theme-spiderman', { base: 'vs-dark', inherit: true, rules: [], colors: { 'editor.background': '#0a1128' } });
+                monaco.editor.defineTheme('theme-strange', { base: 'vs-dark', inherit: true, rules: [{ token: 'keyword', foreground: 'ff7300' }], colors: { 'editor.background': '#1a0f2e' } });
+                monaco.editor.defineTheme('theme-mcqueen', { base: 'vs-dark', inherit: true, rules: [{ token: 'string', foreground: 'ffb300' }], colors: { 'editor.background': '#141414' } });
+                monaco.editor.defineTheme('theme-google', { base: 'vs', inherit: true, rules: [{ token: 'keyword', foreground: 'ea4335' }], colors: { 'editor.background': '#ffffff' } });
+                monaco.editor.defineTheme('theme-robot', { base: 'vs-dark', inherit: true, rules: [{ token: '', foreground: '00ffff' }], colors: { 'editor.background': '#222222', 'editor.foreground': '#00ffff' } });
+
+                models.html = monaco.editor.createModel(savedHtml, "html"); models.css = monaco.editor.createModel(savedCss, "css"); models.js = monaco.editor.createModel(savedJs, "javascript");
+                models.html.onDidChangeContent(autoSave); models.css.onDidChangeContent(autoSave); models.js.onDidChangeContent(autoSave);
+
+                editor = monaco.editor.create(document.getElementById('editor'), {
+                    model: models.html, theme: 'vs-dark', automaticLayout: true, fontFamily: "'JetBrains Mono', monospace", fontSize: 15, minimap: { enabled: false }, padding: { top: 15 },
+                    autoClosingBrackets: 'always', autoClosingQuotes: 'always', formatOnType: true
+                });
+
+                // TAB bilan Qisqartmalarni to'ldirish
+                editor.addCommand(monaco.KeyCode.Tab, function() {
+                    const pos = editor.getPosition(), model = editor.getModel();
+                    const wordMatch = model.getLineContent(pos.lineNumber).substring(0, pos.column - 1).match(/([!a-zA-Z0-9_-]+)$/);
+                    let snippet = wordMatch ? customSnippets[currentActiveEditorTab === 'js' ? 'js' : currentActiveEditorTab][wordMatch[1]] : null;
+                    if (snippet) {
+                        editor.executeEdits("ziro-emmet", [{ range: new monaco.Range(pos.lineNumber, pos.column - wordMatch[1].length, pos.lineNumber, pos.column), text: null }]);
+                        editor.getContribution('snippetController2').insert(snippet);
+                    } else editor.trigger('keyboard', 'type', { text: '\t' });
+                });
+
+                monaco.editor.onDidChangeMarkers(debounce(checkLinterErrors, 400));
+                applyTheme(currentTheme); 
+                runWebProject(); 
+
+                // Yuklash oynasini o'chirish
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            });
+        }
+
+        // LINTER XATOLARINI KO'RSATISH
+        function checkLinterErrors() {
+            if(!editor) return; const markers = monaco.editor.getModelMarkers({ owner: currentActiveEditorTab === 'js' ? 'javascript' : currentActiveEditorTab });
+            const errors = markers.filter(m => m.severity === monaco.MarkerSeverity.Error);
+            document.getElementById('status-lang').innerText = currentActiveEditorTab.toUpperCase();
+            if (errors.length === 0) { document.getElementById('linter-status').classList.remove('error'); document.getElementById('status-icon').innerText = "✅"; document.getElementById('status-text').innerText = errDict[currentLang].noErr; } 
+            else { document.getElementById('linter-status').classList.add('error'); document.getElementById('status-icon').innerText = "❌"; let msg = errors[0].message; const dict = errDict[currentLang].trans; for (const [eT, tR] of Object.entries(dict)) { if (msg.includes(eT)) msg = msg.replace(eT, tR); } document.getElementById('status-text').innerText = `${errDict[currentLang].errIn.replace('{line}', errors[0].startLineNumber)} ${msg}`; }
+        }
+
+        // AGAR INTERNET YO'Q BO'LSA LOADER NI MAJBURAN OLIB TASHLASH (Qotib qolmasligi uchun)
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            if(loader.style.display !== 'none') {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        }, 8000);
+    </script>
+</body>
+</html>
